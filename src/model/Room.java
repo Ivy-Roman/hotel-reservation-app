@@ -6,6 +6,7 @@ public abstract class Room implements IRoom{
     private final RoomType enumeration;
 
     public Room(String roomNumber, Double price, RoomType enumeration) {
+        super();
         this.roomNumber = roomNumber;
         this.price = price;
         this.enumeration = enumeration;
