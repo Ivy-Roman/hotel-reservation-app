@@ -63,4 +63,8 @@ public class ReservationService {
 
         return allReservations;
     }
+
+    public Collection<IRoom> getAllRooms() {
+        return rooms.values();
+    }
 }
