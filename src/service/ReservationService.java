@@ -5,9 +5,11 @@ import model.IRoom;
 import model.Reservation;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ReservationService {
 
+    private static final int DEFAULT_PLUS_DAYS = 7;
     private static final ReservationService STANDARD = new ReservationService();
 
     private final Map<String, IRoom> rooms = new HashMap<>();
@@ -66,5 +68,38 @@ public class ReservationService {
 
     public Collection<IRoom> getAllRooms() {
         return rooms.values();
+    }
+
+    public Collection<IRoom> findAlternativeRooms(final Date checkInDate, final Date checkOutDate) {
+        return findAvailableRooms(addDefaultPlusDays(checkInDate), addDefaultPlusDays(checkOutDate));
+    }
+
+    private Collection<IRoom> findAvailableRooms(final Date checkInDate, final Date checkOutDate) {
+        final Collection<Reservation> allReservations = getAllReservations();
+        final Collection<IRoom> notAvailableRooms = new LinkedList<>();
+
+        for (Reservation reservation : allReservations) {
+            if (reservationOverlaps(reservation, checkInDate, checkOutDate)) {
+                notAvailableRooms.add(reservation.getRoom());
+            }
+        }
+
+        return rooms.values().stream().filter(room -> notAvailableRooms.stream()
+                        .noneMatch(notAvailableRoom -> notAvailableRoom.equals(room)))
+                .collect(Collectors.toList());
+    }
+
+    public Date addDefaultPlusDays(final Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DATE, DEFAULT_PLUS_DAYS);
+
+        return calendar.getTime();
+    }
+
+    private boolean reservationOverlaps(final Reservation reservation, final Date checkInDate,
+                                        final Date checkOutDate){
+        return checkInDate.before(reservation.getCheckOutDate())
+                && checkOutDate.after(reservation.getCheckInDate());
     }
 }
