@@ -16,7 +16,7 @@ public class HotelResource {
     private final CustomerService customerService = CustomerService.getStandard();
     private final ReservationService reservationService = ReservationService.getStandard();
 
-    private HotelResource(){};
+    private HotelResource(){}
 
     public static HotelResource getStandard() {
         return STANDARD;
@@ -50,5 +50,13 @@ public class HotelResource {
 
     public Collection<IRoom> findARoom(final Date checkIn, final Date checkOut) {
         return reservationService.findRooms(checkIn, checkOut);
+    }
+
+    public Collection<IRoom> findAlternativeRooms(final Date checkIn, final Date checkOut) {
+        return reservationService.findAlternativeRooms(checkIn, checkOut);
+    }
+
+    public Date addDefaultPlusDays(final Date date) {
+        return reservationService.addDefaultPlusDays(date);
     }
 }
