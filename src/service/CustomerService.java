@@ -3,17 +3,27 @@ package service;
 import model.Customer;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CustomerService {
-    public void addCustomer(String email, String firstName, String lastName){}
+
+    private static final CustomerService STANDARD = new CustomerService();
+
+    private final Map<String, Customer> customers = new HashMap<>();
+
+    private CustomerService(){}
+
+    public static CustomerService getStandard(){
+        return STANDARD;
+    }
+    public void addCustomer(String email, String firstName, String lastName){
+        customers.put(email, new Customer(firstName, lastName, email));
+    }
     public Customer getCustomer(String customerEmail){
-        return null;
+        return customers.get(customerEmail);
     }
     public Collection<Customer> getAllCustomers(){
-        return null;
-    }
-
-    static <T> void displayCustomer(T variable){
-        System.out.println(variable.getClass().getName());
+        return customers.values();
     }
 }
